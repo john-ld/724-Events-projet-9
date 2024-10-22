@@ -13,4 +13,4 @@ export const MONTHS = {
   12: "décembre",
 };
 
-export const getMonth = (date) => MONTHS[date.getMonth() + 1]; // Correction de l'indexation des mois
+export const getMonth = (date) => MONTHS[date.getMonth() + 1]; // Correction de l'indexation des mois ajout +1 pour afficher le bon mois
