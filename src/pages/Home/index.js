@@ -13,7 +13,12 @@ import Modal from "../../containers/Modal";
 import { useData } from "../../contexts/DataContext";
 
 const Page = () => {
-  const {last} = useData();
+  const { data } = useData(); // A supposer que data contient tous les événements
+  // Trier les événements par date décroissante
+  const sortedEvents = data?.events.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // Sélectionner l'événement le plus récent
+  const last = sortedEvents?.[0]; // Le plus récent est en premier après tri
   return <>
     <header>
       <Menu />
