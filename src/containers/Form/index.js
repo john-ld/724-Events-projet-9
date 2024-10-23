@@ -15,10 +15,11 @@ const Form = ({ onSuccess, onError }) => {
       // We try to call mockContactApi
       try {
         await mockContactApi();
+        onSuccess(true); // Appelle onSuccess avec "true" pour indiquer que l'envoi a réussi !
         setSending(false);
       } catch (err) {
-        setSending(false);
-        onError(err);
+        setSending(false);// Réinitialise l'indicateur d'envoi
+        onError(err); // Affiche un message d'erreur en cas d'échec
       }
     },
     [onSuccess, onError]
