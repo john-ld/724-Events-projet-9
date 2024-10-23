@@ -7,9 +7,9 @@ const Slider = () => {
   const { data } = useData(); // Récupération des données à partir du contexte
   const [index, setIndex] = useState(0); // État pour suivre l'index de l'image affichée
 
-  // Trier les événements par date décroissante (les plus récents en premier)
+  // Trier les événements par date décroissante (du plus ancien au plus récent)
   const byDateDesc = [...(data?.focus || [])].sort((evtA, evtB) =>
-    new Date(evtA.date) > new Date(evtB.date) ? -1 : 1
+    new Date(evtA.date) > new Date(evtB.date) ? 1 : -1
   );
 
   const dataLength = byDateDesc.length; // Stocke la longueur du tableau des événements
