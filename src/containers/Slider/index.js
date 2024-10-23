@@ -4,60 +4,61 @@ import { getMonth } from "../../helpers/Date"; // Importation de la fonction get
 import "./style.scss"; // Importation des styles
 
 const Slider = () => {
-  const { data } = useData(); // Récupération des données à partir du contexte
-  const [index, setIndex] = useState(0); // État pour suivre l'index de l'image affichée
+  const { data } = useData(); // Récupération des données à partir du contexte DataContext
+  const [index, setIndex] = useState(0); // Déclaration de l'état 'index' pour suivre l'index de l'image affichée actuellement
 
-  // Trier les événements par date décroissante (du plus ancien au plus récent)
-  const byDateDesc = [...(data?.focus || [])].sort((evtA, evtB) =>
-    new Date(evtA.date) > new Date(evtB.date) ? 1 : -1
+// Tri des événements par date du plus ancien au plus récent
+  const byDateDesc = data?.focus.sort((evtA, evtB) =>
+    new Date(evtA.date) > new Date(evtB.date) ? 1 : -1 // Si evtA est plus récent que evtB, le tri les place dans l'ordre chronologique
   );
-
-  const dataLength = byDateDesc.length; // Stocke la longueur du tableau des événements
-
-  // Utiliser un intervalle pour changer d'image automatiquement toutes les 5 secondes
+// Fonction pour passer à la carte suivante toutes les 5 secondes
+  const nextCard = () => { 
+    setTimeout(
+      () => setIndex(index < byDateDesc.length - 1 ? index + 1 : 0),// Incrémente l'index jusqu'à atteindre la dernière carte, puis revient à 0
+      5000 // Change la carte toutes les 5 secondes
+    );
+  };
+  // Utilisation de useEffect pour exécuter la fonction nextCard à chaque fois que 'byDateDesc' change
   useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prevIndex) =>
-        prevIndex < dataLength - 1 ? prevIndex + 1 : 0 // Si l'index atteint la dernière image, il revient à 0
-      );
-    }, 5000); // Changer l'image toutes les 5 secondes
-
-    // Nettoyage de l'intervalle pour éviter les fuites de mémoire lors du démontage du composant
-    return () => clearInterval(interval);
-  }, [dataLength]); // Dépend de la longueur du tableau d'événements
-
+    if (byDateDesc) {
+      nextCard();// Si 'byDateDesc' est défini, passe à la carte suivante
+    }
+  });
   return (
     <div className="SlideCardList">
-      {byDateDesc?.map((event, idx) => (
+      {byDateDesc?.map((event, idx) => ( // Parcourt chaque événement trié pour l'afficher dans le slider
         <div
-          key={`event-${event.id}`} // Utilisation de l'ID unique pour chaque carte d'événement
-          className={`SlideCard SlideCard--${index === idx ? "display" : "hide" // Affiche ou cache la carte selon l'index
+        // correction key={`${event.id}`} event n'utilise pas d'id
+        key={event.title}> 
+          <div
+            className={`SlideCard SlideCard--${
+              index === idx ? "display" : "hide"// Affiche la carte si l'index actuel correspond à l'index de la carte, sinon la cache
             }`}
-        >
-          <img src={event.cover} alt={event.title} /> {/* Image de l'événement */}
-          <div className="SlideCard__descriptionContainer">
-            <div className="SlideCard__description">
-              <h3>{event.title}</h3> {/* Titre de l'événement */}
-              <p>{event.description}</p> {/* Description de l'événement */}
-              <div>{getMonth(new Date(event.date))}</div> {/* Affichage du mois de l'événement */}
+          >
+            <img src={event.cover} alt="forum" />
+            <div className="SlideCard__descriptionContainer">
+              <div className="SlideCard__description">
+                <h3>{event.title}</h3>
+                <p>{event.description}</p>
+                <div>{getMonth(new Date(event.date))}</div>
+              </div>
+            </div>
+          </div>
+          <div className="SlideCard__paginationContainer">
+            <div className="SlideCard__pagination">
+              {byDateDesc.map((_, radioIdx) => (
+                <input
+                  key={_.title} // Utilisation du titre comme clé pour chaque élément de pagination
+                  type="radio"
+                  name="radio-button"
+                  checked={index === radioIdx} // correction de checked={idx === radioIdx} correction idx => index 
+                  readOnly // Empêche la modification manuelle des boutons radio
+                />
+              ))}
             </div>
           </div>
         </div>
       ))}
-
-      <div className="SlideCard__paginationContainer">
-        <div className="SlideCard__pagination">
-          {byDateDesc?.map((event, radioIdx) => (
-            <input
-              key={`pagination-${event.id}`} // Clé unique pour chaque bouton de pagination
-              type="radio"
-              name="radio-button"
-              checked={index === radioIdx} // Vérifie si le bouton correspond à l'image actuelle
-              readOnly // Empêche la modification manuelle du bouton
-            />
-          ))}
-        </div>
-      </div>
     </div>
   );
 };
