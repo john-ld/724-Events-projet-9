@@ -38,10 +38,9 @@ EventCard.propTypes = {
 };
 
 EventCard.defaultProps = {
-  imageSrc: "default-image-url.jpg", // Valeur par défaut pour l'URL de l'image si aucune image n'est passée au composant
-  imageAlt: "image", // Texte alternatif par défaut pour l'image si aucun texte n'est fourni
-  small: false, // Par défaut, la carte ne sera pas en version "small" (taille normale)
-  title: "" // Si aucun titre n'est passé, la carte affichera un titre vide (aucun texte visible)
-};
+  imageAlt: "image",
+  small: false,// img rendu en mode "non réduit" ou "normal"
+}
+
 
 export default EventCard;
