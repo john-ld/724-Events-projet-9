@@ -13,7 +13,7 @@ import Modal from "../../containers/Modal";
 import { useData } from "../../contexts/DataContext";
 
 const Page = () => {
-  const { data } = useData(); // A supposer que data contient tous les événements
+  const { data } = useData(); 
   // Trier les événements par date décroissante
   const sortedEvents = data?.events.sort((a, b) => new Date(b.date) - new Date(a.date));
 
