@@ -20,13 +20,18 @@ export const api = {
 export const DataProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
-  const last = useMemo(() => { // Utilisation de useMemo pour afficher le dernier évènement last
+  // Utilisation de useMemo pour afficher le dernier évènement last
+  // Cette fonction ne sera réévaluée que si 'data' change.
+  const last = useMemo(() => {
     if (!data) return null;
+    // Utilise reduce pour parcourir les événements et trouver le plus récent.
     return data.events?.reduce((mostRecent, event) => {
       if (!mostRecent) return event;
-      return new Date(mostRecent.date) > new Date(event.date) ? mostRecent : event;
+      return new Date(mostRecent.date) > new Date(event.date) // Compare les dates pour sélectionner l'événement le plus récent
+        ? mostRecent
+        : event;
     });
-  }, [data]);
+  }, [data]); // 'last' sera recalculé uniquement lorsque 'data' change
   const getData = useCallback(async () => {
     try {
       setData(await api.loadData());
@@ -38,9 +43,9 @@ export const DataProvider = ({ children }) => {
     if (data) return;
     getData();
   });
-  
+
   return (
-    <DataContext.Provider
+    <DataContext.Provider // Fournit les données 'data', les erreurs 'error' et le dernier événement 'last' via le contexte
       // eslint-disable-next-line react/jsx-no-constructed-context-values
       value={{
         data,
@@ -55,7 +60,7 @@ export const DataProvider = ({ children }) => {
 
 DataProvider.propTypes = {
   children: PropTypes.node.isRequired,
-}
+};
 
 export const useData = () => useContext(DataContext);
 
